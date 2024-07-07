@@ -65,7 +65,7 @@ export class Service {
 
   async deletePost(slug) {
     try {
-      const resp = this.databases.deleteDocument(
+      this.databases.deleteDocument(
         conf.appwriteDatabaseId,
         conf.appwriteCollectionId,
         slug
@@ -143,7 +143,7 @@ export class Service {
 
   async deleteFile(fileId){
     try {
-        const resp = this.bucket.deleteFile(
+        this.bucket.deleteFile(
             conf.appwriteBucketId,
             fileId
         )
