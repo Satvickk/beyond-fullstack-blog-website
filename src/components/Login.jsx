@@ -62,9 +62,8 @@ function Login() {
 
                     <Input 
                     type="email"
-                    value='satvick@gmail.com'
                     placeholder="Enter your email"
-                    label="Email: "
+                    label="Email: satvick@gmail.com"
                     {...register("email", {
                         required : true,
                         validate : {
@@ -75,9 +74,8 @@ function Login() {
                     />
                     <Input 
                     type="password"
-                    value='Sp@123456'
                     placeholder="Enter your password"
-                    label="Password: "
+                    label="Password: Sp@123456"
                     {...register("password", {
                         required : true,
                     })}
