@@ -1,8 +1,6 @@
-import React from 'react'
-
-function Logo({width = '100px'}) {
+function Logo() {
   return (
-    <div className='h-[150px] w-[150px] '>
+    <div className='w-full h-full'>
       <img 
       src='/logo.png'
       />

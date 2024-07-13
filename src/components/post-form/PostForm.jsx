@@ -1,10 +1,11 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button, Input, RTE, Select } from "..";
 import appwriteService from "../../appwrite/config";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { addPost, updatePost } from "../../store/postSlice";
+import { ScaleLoader } from "react-spinners";
 
 export default function PostForm({ post }) {
     const { register, handleSubmit, watch, setValue, control, getValues } = useForm({
@@ -21,9 +22,12 @@ export default function PostForm({ post }) {
     const userData = useSelector((state) => state.auth.userData.userData);
     const dispatch = useDispatch()
 
+    const [loading, setLoading] = useState(false)
+
     const submit = async (data) => {
+        setLoading(true)
         console.log(data);
-    
+        
         if (post) {
             let file = null;
             if (data.featuredImage[0]) {
@@ -44,6 +48,7 @@ export default function PostForm({ post }) {
                 dispatch(updatePost(dbPost))
                 navigate(`/post/${dbPost.$id}`);
             }
+            setLoading(false)
         } else {
             let file = null;
             if (data.featuredImage[0]) {
@@ -63,9 +68,11 @@ export default function PostForm({ post }) {
                 if (dbPost) {
                     dispatch(addPost(dbPost))
                     navigate(`/post/${dbPost.$id}`);
+                    setLoading(false)
                 }
             } else {
                 console.log("Could not upload file");
+                setLoading(false)
             }
         }
     };
@@ -95,7 +102,7 @@ export default function PostForm({ post }) {
 
     return (
         <form onSubmit={handleSubmit(submit)} className="flex flex-wrap">
-            <div className="w-2/3 px-2">
+            <div className="w-full sm:w-2/3 px-2">
                 <Input
                     label="Title :"
                     placeholder="Title"
@@ -113,7 +120,7 @@ export default function PostForm({ post }) {
                 />
                 <RTE label="Content :" name="content" control={control} defaultValue={getValues("content")} />
             </div>
-            <div className="w-1/3 px-2">
+            <div className="w-full sm:w-1/3 px-2">
                 <Input
                     label="Featured Image :"
                     type="file"
@@ -136,9 +143,13 @@ export default function PostForm({ post }) {
                     className="mb-4"
                     {...register("status", { required: true })}
                 />
-                <Button type="submit" bgColor={post ? "bg-green-500" : undefined} className="w-full">
+                {
+                    loading ? 
+                    <ScaleLoader loading={loading} /> : 
+                    <Button type="submit" bgColor={post ? "bg-green-500" : undefined} className="w-full">
                     {post ? "Update" : "Submit"}
                 </Button>
+                }
             </div>
         </form>
     );

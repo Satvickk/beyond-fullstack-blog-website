@@ -6,22 +6,26 @@ import { Button, Input, Logo} from "../components/index"
 import authService from '../appwrite/auth'
 import { useForm } from 'react-hook-form'
 import Swal from 'sweetalert'
+import { ScaleLoader } from 'react-spinners'
 
 function Login() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [error, setError] = useState("")
+    const [loading, setLoading] = useState(false)
 
     const {register, handleSubmit} = useForm();
     
     const login = async(data) => {
         setError("");
+        setLoading(true)
         try {
             const session = await authService.login(data)
             if(session){
                 const userData = await authService.getCurrentUser()
                 if(userData) dispatch(authLogin(userData));
                 navigate("/")
+                setLoading(false)
             }
         } catch (error) {
             setError(error.message)
@@ -30,6 +34,7 @@ function Login() {
                 "Cannot log in user! Please try again",
                 "error"
             )
+            setLoading(false)
         }
     }
   return (
@@ -49,7 +54,7 @@ function Login() {
                         to="/signup"
                         className="font-medium text-primary transition-all duration-200 hover:underline"
                     >
-                        Sign Up
+                       Sign Up
                     </Link>
         </p>
             <form onSubmit={handleSubmit(login)} className='mt-8'>
@@ -57,6 +62,7 @@ function Login() {
 
                     <Input 
                     type="email"
+                    value='satvick@gmail.com'
                     placeholder="Enter your email"
                     label="Email: "
                     {...register("email", {
@@ -69,13 +75,16 @@ function Login() {
                     />
                     <Input 
                     type="password"
+                    value='Sp@123456'
                     placeholder="Enter your password"
                     label="Password: "
                     {...register("password", {
                         required : true,
                     })}
                     />
-                    <Button className="w-full" type='submit'>Log in</Button>
+                    {
+                        loading ? <ScaleLoader loading={loading} /> : <Button className="w-full" type='submit'>Log in</Button>
+                    }
                 </div>
             </form>
         </div>

@@ -6,16 +6,19 @@ import { login as authLogin } from '../store/authSlice'
 import authService from '../appwrite/auth'
 import { useForm } from 'react-hook-form'
 import Swal from 'sweetalert'
+import { ScaleLoader } from 'react-spinners'
 
 function SignIn() {
 
     const navigate = useNavigate()
     const [error, setError] = useState("")
+    const [loading, setLoading] = useState(false)
     const dispatch = useDispatch()
     const {register, handleSubmit} = useForm();
 
     const create = async(data) => {
         setError("");
+        setLoading(true)
         try {
             const session = await authService.createAccount(data);
             // console.log("session", session)
@@ -24,6 +27,7 @@ function SignIn() {
                 // console.log("userData", userData)
                 if(userData) dispatch(authLogin(userData));
                 navigate("/")
+                setLoading(false)
             }
         } catch (error) {
             setError(error.message)
@@ -32,6 +36,7 @@ function SignIn() {
                 "Could not create Account! Please try again",
                 "error"
             )
+            setLoading(false)
         }
     }
   return (
@@ -82,9 +87,13 @@ function SignIn() {
                         {...register("password", {
                             required: true,})}
                         />
+                    {
+                        loading ? 
+                        <ScaleLoader loading={loading}/> :
                         <Button type="submit" className="w-full">
                             Create Account
                         </Button>
+                    }
                     </div>
                 </form>
             </div>
